@@ -90,3 +90,6 @@ cache:
       calendar:
         in-memory: 1m
         redis: 2m
+
+server:
+  port: 8081
