@@ -92,3 +92,10 @@ cache:
       calendar:
         in-memory: 1m
         redis: 2m
+
+neis:
+  url: https://open.neis.go.kr/hub/schoolInfo
+  api-key: ${NEIS_API_KEY}
+
+KAKAO:
+  API-KEY: {KAKAO_API_KEY}

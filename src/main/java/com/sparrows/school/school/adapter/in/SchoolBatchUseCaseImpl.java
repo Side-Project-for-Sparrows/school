@@ -30,7 +30,7 @@ public class SchoolBatchUseCaseImpl implements SchoolBatchUseCase {
     @Value("${neis.api-key}")
     private String apiKey;
 
-    @Value("${app.api-key}")
+    @Value("${kakao.api-key}")
     private String kakaoKey;
 
     Map<String, SchoolType> schoolTypeMap = new HashMap<>();

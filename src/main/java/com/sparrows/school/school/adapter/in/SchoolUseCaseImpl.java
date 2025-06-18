@@ -32,7 +32,7 @@ public class SchoolUseCaseImpl implements SchoolUseCase {
     @Value("${neis.api-key}")
     private String apiKey;
 
-    @Value("${app.api-key}")
+    @Value("${kakao.api-key}")
     private String kakaoKey;
 
     private final SchoolRepositoryPort schoolRepositoryPort;
