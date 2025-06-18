@@ -44,7 +44,7 @@ TIMEZONE:
 
 search:
   service:
-    url: localhost:8080
+    url: 192.168.0.17:30081
 
 kafka:
   aggregateType:

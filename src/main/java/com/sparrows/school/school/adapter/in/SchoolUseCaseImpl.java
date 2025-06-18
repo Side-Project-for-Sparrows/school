@@ -110,7 +110,9 @@ public class SchoolUseCaseImpl implements SchoolUseCase {
 
         List<SchoolEntity> schools = new ArrayList<>();
         for(Integer id: ids){
-            schools.add(schoolRepositoryPort.findSchoolById(id).orElseThrow());
+            SchoolEntity entity = schoolRepositoryPort.findSchoolById(id).orElse(null);
+            if(entity == null) continue;
+            schools.add(entity);
         }
 
         return schools;
