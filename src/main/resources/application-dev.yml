@@ -1,0 +1,92 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.0.17:30000/mydb
+    username: myuser
+    password: mypw
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    mongodb:
+      uri: mongodb://admin:password@192.168.0.17:30017/admin
+    redis:
+      host: 192.168.0.17
+      port: 30079
+    elasticsearch:
+      uri: 192.168.0.17:30920
+  task:
+    scheduling:
+      pool:
+        size: 5
+  batch:
+    jdbc:
+      initialize-schema: always  # 배치 메타 테이블 자동 생성
+    job:
+      enabled: false
+  kafka:
+    bootstrap-servers: 192.168.0.17:30092
+    admin:
+      auto-create: true
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+      auto-offset-reset: latest
+
+TIMEZONE:
+  OFFSET: 9
+
+search:
+  service:
+    url: localhost:8080
+
+kafka:
+  aggregateType:
+    user: "user"
+    post: "post"
+    board: "board"
+    school: "school"
+
+  topic:
+    user:
+      create: "user-create-event"
+      update: "user-update-event"
+      delete: "user-delete-event"
+    post:
+      create: "post-create-event"
+      update: "post-update-event"
+      delete: "post-delete-event"
+    board:
+      create: "board-create-event"
+      update: "board-update-event"
+      delete: "board-delete-event"
+    school:
+      create: "school-create-event"
+      update: "school-update-event"
+      delete: "school-delete-event"
+
+  groupId:
+    board: "board-group-kwan"
+    school: "school-group-kwan"
+    search: "search-group-kwan"
+
+logging:
+  level:
+    org.apache.kafka: WARN
+    org.apache.kafka.clients.consumer: WARN
+    org.apache.kafka.clients.producer: WARN
+    org.springframework.kafka: WARN
+
+cache:
+  ttl:
+    default-ttl: 5m
+    domain:
+      calendar:
+        in-memory: 1m
+        redis: 2m
