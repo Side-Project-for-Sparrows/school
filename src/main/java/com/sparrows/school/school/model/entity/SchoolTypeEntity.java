@@ -28,6 +28,11 @@ public class SchoolTypeEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public SchoolTypeEntity(String typeName, SchoolType typeEnum) {
+        this.typeName = typeName;
+        this.typeEnum = typeEnum;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

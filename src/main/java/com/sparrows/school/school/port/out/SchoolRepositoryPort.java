@@ -11,4 +11,6 @@ public interface SchoolRepositoryPort {
     SchoolEntity save(SchoolEntity school);
 
     Optional<SchoolEntity> findSchoolById(int schoolId);
+
+    long count();
 }

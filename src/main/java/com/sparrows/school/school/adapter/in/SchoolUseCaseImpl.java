@@ -4,14 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparrows.school.school.exception.SchoolErrorCode;
 import com.sparrows.school.school.model.dto.CreateFailureRequestDto;
-import com.sparrows.school.school.model.dto.internal.SchoolSaveRequest;
+import com.sparrows.school.school.model.dto.internal.KakaoGeoResponseDto;
 import com.sparrows.school.school.model.dto.internal.SchoolSearchRequest;
 import com.sparrows.school.school.model.entity.SchoolEntity;
 import com.sparrows.school.school.port.in.SchoolUseCase;
-import com.sparrows.school.school.port.out.AdminPort;
-import com.sparrows.school.school.port.out.SchoolRepositoryPort;
-import com.sparrows.school.school.port.out.SchoolSearchPort;
-import com.sparrows.school.school.model.dto.internal.KakaoGeoResponseDto;
+import com.sparrows.school.school.port.out.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -26,12 +23,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class SchoolUseCaseImpl implements SchoolUseCase {
-    @Value("${neis.url}")
-    private String baseUrl;
-
-    @Value("${neis.api-key}")
-    private String apiKey;
-
     @Value("${kakao.api-key}")
     private String kakaoKey;
 
@@ -50,6 +41,15 @@ public class SchoolUseCaseImpl implements SchoolUseCase {
     public boolean isSameLocationWithSchoolId(int schoolId, double latitude, double longitude) {
 
         try {
+            Optional<SchoolEntity> optionalSchool = schoolRepositoryPort.findSchoolById(schoolId);
+            if (optionalSchool.isEmpty()) {
+                log.warn("🏫 학교 ID({})에 해당하는 학교 정보 없음", schoolId);
+                adminPort.sendCreateFailureRequest(CreateFailureRequestDto.from(SchoolErrorCode.SCHOOL_NOT_FOUND));
+                return false;
+            }
+
+            if (optionalSchool.get().getStdCode().equals("000000")) return true;
+
             String jsonResponse = getAddressFromCoordinates(latitude, longitude);
             KakaoGeoResponseDto kakaoGeoResponseDto = new ObjectMapper().readValue(jsonResponse, KakaoGeoResponseDto.class);
 
@@ -62,13 +62,6 @@ public class SchoolUseCaseImpl implements SchoolUseCase {
 
             String addressName = documents.getFirst().getRoadAddress().getAddressName();
             log.info("📍 조회된 도로명 주소: {}", addressName);
-
-            Optional<SchoolEntity> optionalSchool = schoolRepositoryPort.findSchoolById(schoolId);
-            if (optionalSchool.isEmpty()) {
-                log.warn("🏫 학교 ID({})에 해당하는 학교 정보 없음", schoolId);
-                adminPort.sendCreateFailureRequest(CreateFailureRequestDto.from(SchoolErrorCode.SCHOOL_NOT_FOUND));
-                return false;
-            }
 
             String registeredAddress = optionalSchool.get().getAddress();
             boolean isMatch = registeredAddress.equals(addressName);
@@ -118,9 +111,4 @@ public class SchoolUseCaseImpl implements SchoolUseCase {
         return schools;
     }
 
-    @Override
-    public void insertSchool(SchoolEntity school) {
-        schoolRepositoryPort.save(school);
-        schoolSearchPort.save(SchoolSaveRequest.from(school));
-    }
 }

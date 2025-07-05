@@ -30,9 +30,6 @@ public class SchoolBatchUseCaseImpl implements SchoolBatchUseCase {
     @Value("${neis.api-key}")
     private String apiKey;
 
-    @Value("${kakao.api-key}")
-    private String kakaoKey;
-
     Map<String, SchoolType> schoolTypeMap = new HashMap<>();
 
     private final UnknownSchoolRepositoryPort unknownSchoolRepositoryPort;
@@ -44,11 +41,11 @@ public class SchoolBatchUseCaseImpl implements SchoolBatchUseCase {
 
     @Transactional(rollbackOn = Exception.class)
     public void executeBatch(String targetDate) {
-        CreateSchoolRequestDto requestDto = new CreateSchoolRequestDto("20250430"); // test용
-//        CreateSchoolRequestDto requestDto = new CreateSchoolRequestDto(targetDate);
+        CreateSchoolRequestDto requestDto = new CreateSchoolRequestDto(targetDate);
         initSchoolTypeMap();
         List<JsonNode> schoolJsonList = fetchSchoolJsonList(requestDto);
         List<SchoolProcessResultDto> processed = processSchoolJsonList(schoolJsonList);
+
         saveOrUpdateSchool(processed);
 
         log.info("✅ 배치 완료 - 기준일자: {}", targetDate);
@@ -135,8 +132,14 @@ public class SchoolBatchUseCaseImpl implements SchoolBatchUseCase {
 
     private void saveUnknownSchool(SchoolProcessResultDto processResult) {
         UnknownSchoolEntity unknownSchool = processResult.createUnknown();
-        unknownSchoolRepositoryPort.save(unknownSchool);
-        log.info("Saved unknown school: {}", processResult.getSchoolName());
+        boolean exists = unknownSchoolRepositoryPort.existsByStdCode(unknownSchool.getStdCode());
+
+        if (!exists) {
+            unknownSchoolRepositoryPort.save(unknownSchool);
+            log.info("Saved unknown school: {}", processResult.getSchoolName());
+        } else {
+            log.warn("Unknown school already exists - stdCode: {}, name: {}", unknownSchool.getStdCode(), processResult.getSchoolName());
+        }
     }
 
     private void saveOrUpdateSchoolEntity(SchoolProcessResultDto processResult) {

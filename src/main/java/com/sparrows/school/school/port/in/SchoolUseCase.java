@@ -8,6 +8,4 @@ public interface SchoolUseCase {
     boolean isSameLocationWithSchoolId(int schoolId, double latitude, double longitude);
 
     List<SchoolEntity> getSchoolByInitialConsonant(String query);
-
-    void insertSchool(SchoolEntity school);
 }
