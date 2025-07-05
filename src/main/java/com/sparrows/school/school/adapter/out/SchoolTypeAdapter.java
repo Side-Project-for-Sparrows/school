@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,7 +26,17 @@ public class SchoolTypeAdapter implements SchoolTypeRepositoryPort {
     }
 
     @Override
+    public SchoolTypeEntity save(SchoolTypeEntity schoolTypeEntity) {
+        return schoolTypeRepository.save(schoolTypeEntity);
+    }
+
+    @Override
     public List<SchoolTypeEntity> findAll() {
         return schoolTypeRepository.findAll();
+    }
+
+    @Override
+    public Optional<SchoolTypeEntity> findSchoolTypeByName(String typeName) {
+        return schoolTypeRepository.findSchoolTypeByTypeName(typeName);
     }
 }

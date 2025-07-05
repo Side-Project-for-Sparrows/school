@@ -34,7 +34,7 @@ public class SchoolBatchConfig {
         this.jobExplorer = jobExplorer;
     }
 
-    @Bean
+    @Bean(name = "schoolJob")
     public Job schoolJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws DuplicateJobException {
         return new JobBuilder("schoolJob",jobRepository)
                 .start(schoolStep(jobRepository,transactionManager))
@@ -50,9 +50,11 @@ public class SchoolBatchConfig {
     @Bean
     public Tasklet schoolTasklet() {
         return (contribution, chunkContext) -> {
-            // 가장 최근 배치 실행 날짜를 가져옵니다.
-            String lastExecutionDate = getLastSuccessfulExecutionDate();
-            schoolBatchUseCase.executeBatch(lastExecutionDate); // 배치 실행
+            String targetDate = (String) chunkContext.getStepContext()
+                    .getJobParameters()
+                    .getOrDefault("targetDate", getLastSuccessfulExecutionDate());
+
+            schoolBatchUseCase.executeBatch(targetDate); // 배치 실행
             return RepeatStatus.FINISHED;
         };
     }

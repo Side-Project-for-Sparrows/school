@@ -30,4 +30,9 @@ public class SchoolAdapter implements SchoolRepositoryPort {
     public Optional<SchoolEntity> findSchoolById(int schoolId) {
         return schoolRepository.findById(schoolId);
     }
+
+    @Override
+    public long count() {
+        return schoolRepository.count();
+    }
 }

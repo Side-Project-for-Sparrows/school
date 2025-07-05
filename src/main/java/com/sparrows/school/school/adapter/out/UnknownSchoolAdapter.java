@@ -5,6 +5,9 @@ import com.sparrows.school.school.model.entity.UnknownSchoolEntity;
 import com.sparrows.school.school.port.out.UnknownSchoolRepositoryPort;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class UnknownSchoolAdapter implements UnknownSchoolRepositoryPort {
 
@@ -17,5 +20,20 @@ public class UnknownSchoolAdapter implements UnknownSchoolRepositoryPort {
     @Override
     public void save(UnknownSchoolEntity school) {
         unknownSchoolRepository.save(school);
+    }
+
+    @Override
+    public boolean existsByStdCode(String stdCode) {
+        return unknownSchoolRepository.existsByStdCode(stdCode);
+    }
+
+    @Override
+    public Optional<UnknownSchoolEntity> findById(Integer id) {
+        return unknownSchoolRepository.findById(id);
+    }
+
+    @Override
+    public List<UnknownSchoolEntity> findAll() {
+        return unknownSchoolRepository.findAll();
     }
 }
