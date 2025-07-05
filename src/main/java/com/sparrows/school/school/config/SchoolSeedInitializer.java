@@ -2,6 +2,7 @@ package com.sparrows.school.school.config;
 
 import com.sparrows.school.school.model.entity.SchoolEntity;
 import com.sparrows.school.school.model.enums.SchoolType;
+import com.sparrows.school.school.port.out.SchoolEventPort;
 import com.sparrows.school.school.port.out.SchoolRepositoryPort;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class SchoolSeedInitializer {
 
     private final SchoolRepositoryPort schoolRepositoryPort;
+    private final SchoolEventPort schoolEventPort;
 
     @PostConstruct
     public void init() {
@@ -30,7 +32,8 @@ public class SchoolSeedInitializer {
                 .typeException(false)
                 .build();
 
-        schoolRepositoryPort.save(school);
+        SchoolEntity schoolEntity = schoolRepositoryPort.save(school);
+        schoolEventPort.publishSchoolCreatedEvent(schoolEntity.getId(), schoolEntity.getName());
         log.info("[시드 데이터] School 데이터 초기화 완료: {}", school.getName());
     }
 }
