@@ -73,7 +73,7 @@ kafka:
 
   groupId:
     board: "board-group-kwan"
-    school: "school-group-kwan"
+    school: "school-group-kwan-test-dsklfsjdlkfjdskfjsjkl"
     search: "search-group-kwan"
 
 logging:

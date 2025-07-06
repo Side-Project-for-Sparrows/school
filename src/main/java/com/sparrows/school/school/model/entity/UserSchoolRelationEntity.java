@@ -12,7 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user_school_relation")
+@Table(name = "user_school_relation",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"school_id", "user_id"})
+        }
+)
 public class UserSchoolRelationEntity {
 
     @Id

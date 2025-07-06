@@ -32,8 +32,6 @@ public class UserEventSchoolListener {
     )
     @KafkaListener(topics = "${kafka.topic.user.create}", groupId = "${kafka.groupId.school}")
     public void handleUserEvent(String message) throws JsonProcessingException {
-        System.out.println(message);
-        //String json = objectMapper.readValue(message, String.class);  // 첫 번째 언래핑
         UserCreatedPayload createdPayload = objectMapper.readValue(message,UserCreatedPayload.class);
         if (createdPayload.getUserType() == UserType.OFFICIAL) handleUserCreated(createdPayload);
     }
