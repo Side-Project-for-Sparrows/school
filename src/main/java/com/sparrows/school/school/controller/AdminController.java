@@ -14,30 +14,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/school/admin")
+//@RequestMapping("/school/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final BatchUseCase batchUseCase;
     private final AdminUseCase adminUseCase;
 
-    @GetMapping("/batch/list")
+    @GetMapping("/school/admin/batch/list")
     public ResponseEntity<List<BatchJobEntity>> list() {
         return ResponseEntity.ok(batchUseCase.getBatchJobList());
     }
 
-    @PostMapping("/batch/execute")
+    @PostMapping("/school/admin/batch/execute")
     public ResponseEntity<String> execute(@RequestBody SchoolBatchRequestDto dto) {
         batchUseCase.executeManualBatch(dto);
         return ResponseEntity.ok("배치 실행 완료");
     }
 
-        @GetMapping("/unknown/list")
+        @GetMapping("/school/admin/unknown/list")
     public ResponseEntity<List<UnknownSchoolEntity>> listUnknown() {
         return ResponseEntity.ok(adminUseCase.getUnknownSchoolList());
     }
 
-    @PostMapping("/unknown/add")
+    @PostMapping("/school/admin/unknown/add")
     public ResponseEntity<String> addUnknown(@RequestBody AdminSchoolRequestDto dto) {
         adminUseCase.insertUnknownSchool(dto);
         return ResponseEntity.ok("unknown 학교 삽입 완료");
